@@ -1,10 +1,10 @@
-# 📅 EventEase Management System
+# EventEase Management System
 
 EventEase is an ASP.NET Core MVC web application designed for managing venues, events, and bookings seamlessly. It allows event specialists to manage venue availability, register corporate/private events, and assign events to venues with automated cost calculations and strict integrity constraints.
 
 ---
 
-## 🛠 Database Architecture & ERD Specifications
+# Database Architecture & ERD Specifications
 
 The application persistence layer is built on SQL Server using Entity Framework Core with the following schema rules:
 
@@ -14,7 +14,7 @@ The application persistence layer is built on SQL Server using Entity Framework 
 
 ---
 
-## 🗄 Database Setup Script (`script.sql`)
+# Database Setup Script (`script.sql`)
 
 The script below contains all relevant T-SQL operations:
 - **Table Creation**
@@ -130,42 +130,3 @@ CREATE INDEX IX_dbo_Events_VenueId ON dbo_Events (VenueId);
 CREATE INDEX IX_dbo_Bookings_VenueId ON dbo_Bookings (VenueId);
 CREATE UNIQUE INDEX IX_dbo_Bookings_EventId ON dbo_Bookings (EventId);
 GO
-
--- ----------------------------------------------------------------------------
--- 3. TABLE DATA INSERTION (Sample Data)
--- ----------------------------------------------------------------------------
-
--- Insert Sample Venues
-INSERT INTO dbo_Venues (Id, Name, Location, Capacity, HourlyRate, ImageUrl, AmenitiesJson, Status, Description)
-VALUES 
-    ('v-001', 'Grand Horizon Ballroom', 'Cape Town City Centre', 500, 1500.00, 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3', '["WiFi","Projector","Stage","Sound System","Catering Service"]', 'Active', 'A luxurious hall suitable for corporate galas and large weddings.'),
-    ('v-002', 'Sunset Garden Pavilion', 'Stellenbosch Wine Route', 250, 950.00, 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce', '["Outdoor Lighting","Bar Area","Stage","Parking"]', 'Active', 'Beautiful outdoor venue surrounded by vineyards.'),
-    ('v-003', 'Apex Innovation Hub', 'Sandton Financial District', 80, 600.00, 'https://images.unsplash.com/photo-1431540015161-0bf868a2d407', '["High-Speed Fiber","Smart Boards","Video Conferencing"]', 'Active', 'Modern conference setup tailored for tech summits and workshops.');
-
--- Insert Sample Events
-INSERT INTO dbo_Events (Id, Title, ClientName, ClientEmail, ExpectedAttendance, StartDate, EndDate, VenueId, Status)
-VALUES 
-    ('e-001', 'Tech Innovation Summit 2026', 'Sarah Jenkins', 'sarah.j@techcorp.co.za', 75, '2026-09-15 09:00:00', '2026-09-15 17:00:00', 'v-003', 'Booked'),
-    ('e-002', 'Annual Healthcare Leadership Gala', 'Dr. Michael Vance', 'mvance@medafrica.org', 450, '2026-10-01 18:00:00', '2026-10-01 23:00:00', 'v-001', 'Booked'),
-    ('e-003', 'Creative Design Expo', 'Elena Rostova', 'elena@designstudio.io', 200, '2026-11-10 10:00:00', '2026-11-10 16:00:00', NULL, 'Unassigned');
-
--- Insert Sample Bookings
-INSERT INTO dbo_Bookings (Id, BookingCode, VenueId, EventId, SpecialistName, StartDate, EndDate, TotalCost, Status)
-VALUES 
-    ('b-001', 'BK-A1B2C3D4', 'v-003', 'e-001', 'David Ross', '2026-09-15 09:00:00', '2026-09-15 17:00:00', 4800.00, 'Confirmed'),
-    ('b-002', 'BK-E5F6G7H8', 'v-001', 'e-002', 'Amanda Peterson', '2026-10-01 18:00:00', '2026-10-01 23:00:00', 7500.00, 'Confirmed');
-GO
-```
-
----
-
-## 🚀 How to Run
-
-1. **Database Setup**: Execute the script above or run EF Core migrations:
-   ```bash
-   dotnet ef database update
-   ```
-2. **Run Application**:
-   ```bash
-   dotnet run
-   ```
