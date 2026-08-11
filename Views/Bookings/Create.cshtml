@@ -1,0 +1,64 @@
+@model EventEaseApp.Models.Booking
+
+@{
+    ViewData["Title"] = "Create Booking";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 fw-bold mb-0 text-gradient"><i class="bi bi-bookmark-plus me-2 text-primary"></i>Create New Booking</h2>
+            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+        </div>
+
+        <div class="card glass-card p-4 p-md-5">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="EventId" class="form-label fw-semibold">Select Event (Unbooked Only)</label>
+                    <select asp-for="EventId" class="form-select" asp-items="ViewBag.EventId">
+                        <option value="">-- Select Event --</option>
+                    </select>
+                    <span asp-validation-for="EventId" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="VenueId" class="form-label fw-semibold">Select Venue</label>
+                    <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId">
+                        <option value="">-- Select Venue --</option>
+                    </select>
+                    <span asp-validation-for="VenueId" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SpecialistName" class="form-label fw-semibold">Event Specialist Name</label>
+                    <input asp-for="SpecialistName" class="form-control" placeholder="e.g. Jane Smith" />
+                    <span asp-validation-for="SpecialistName" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="StartDate" class="form-label fw-semibold">Start Date & Time</label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label asp-for="EndDate" class="form-label fw-semibold">End Date & Time</label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary px-4 py-2"><i class="bi bi-check-circle-fill me-1"></i> Confirm & Create Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

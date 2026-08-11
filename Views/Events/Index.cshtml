@@ -1,0 +1,102 @@
+@model IEnumerable<EventEaseApp.Models.Event>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+        <h2 class="h3 fw-bold mb-1 text-gradient"><i class="bi bi-calendar-event me-2 text-info"></i>Event Requests</h2>
+        <p class="text-muted small mb-0">Track incoming client event requests and venue allocations.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Create New Event
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card glass-card p-5 text-center text-muted">
+        <i class="bi bi-calendar-x display-3 mb-3 text-secondary"></i>
+        <h4>No Events Found</h4>
+        <p class="mb-4">Log a new client event request to get started.</p>
+        <div>
+            <a asp-action="Create" class="btn btn-primary px-4"><i class="bi bi-plus-lg me-1"></i> Add Event</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive-custom mb-5">
+        <table class="table table-custom table-hover">
+            <thead>
+                <tr>
+                    <th>Event Title</th>
+                    <th>Client Details</th>
+                    <th>Attendance</th>
+                    <th>Assigned Venue</th>
+                    <th>Schedule</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var statusBadge = item.Status switch
+                    {
+                        "Booked" => "badge-booked",
+                        "Completed" => "badge-completed",
+                        "Cancelled" => "badge-cancelled",
+                        _ => "badge-unassigned"
+                    };
+
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-dark">@item.Title</div>
+                            <div class="text-muted extra-small">ID: @item.Id</div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold">@item.ClientName</div>
+                            <div class="text-muted small"><i class="bi bi-envelope me-1"></i>@item.ClientEmail</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-people me-1 text-primary"></i>@item.ExpectedAttendance guests
+                            </span>
+                        </td>
+                        <td>
+                            @if (item.Venue != null)
+                            {
+                                var venueImg = string.IsNullOrWhiteSpace(item.Venue.ImageUrl) 
+                                    ? "/images/default-venue.svg" 
+                                    : item.Venue.ImageUrl;
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@venueImg" 
+                                         alt="@item.Venue.Name" 
+                                         class="rounded-2 shadow-sm flex-shrink-0" 
+                                         style="width: 38px; height: 38px; object-fit: cover;"
+                                         onerror="this.onerror=null; this.src='/images/default-venue.svg';" />
+                                    <div>
+                                        <div class="fw-semibold small">@item.Venue.Name</div>
+                                        <div class="text-muted extra-small">@item.Venue.Location</div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted fst-italic small"><i class="bi bi-slash-circle me-1"></i>Unassigned</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="small"><i class="bi bi-clock me-1 text-muted"></i>@item.StartDate.ToString("yyyy-MM-dd HH:mm")</div>
+                        </td>
+                        <td>
+                            <span class="badge-premium @statusBadge">@item.Status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Hero Section -->
+<div class="hero-gradient mb-5 text-center text-md-start">
+    <div class="row align-items-center g-4">
+        <div class="col-md-7 ps-md-5">
+            <span class="badge bg-light text-primary fw-bold px-3 py-2 rounded-pill mb-3 uppercase tracking-wider">v1.0 Release</span>
+            <h1 class="display-4 fw-extrabold text-white tracking-tight mb-3">Event Planning, <br>Simplified.</h1>
+            <p class="lead text-white-50 mb-4">Manage venues, event details, and specialist scheduling seamlessly in one premium unified system.</p>
+            <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary btn-lg px-4 py-3"><i class="bi bi-calendar-check me-2"></i>New Booking</a>
+                <a asp-controller="Venues" asp-action="Index" class="btn btn-secondary btn-lg px-4 py-3 text-dark"><i class="bi bi-building me-2"></i>Explore Venues</a>
+            </div>
+        </div>
+        <div class="col-md-5 text-center d-none d-md-block">
+            <i class="bi bi-calendar2-check-fill display-1 text-white opacity-25" style="font-size: 8rem;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Features & Navigation Cards -->
+<h3 class="fw-bold mb-4">Quick Workflows</h3>
+<div class="row g-4 mb-5">
+    <!-- Venues Management -->
+    <div class="col-md-4">
+        <div class="card glass-card h-100 p-4">
+            <div class="mb-3 text-primary">
+                <span class="p-3 bg-primary bg-opacity-10 rounded-3 d-inline-block">
+                    <i class="bi bi-bank fs-3"></i>
+                </span>
+            </div>
+            <h4 class="fw-bold mb-2">Venues</h4>
+            <p class="text-muted mb-4">Add, view, and organize event spaces. Track capacity, amenities, and hourly rates dynamically.</p>
+            <div class="mt-auto d-flex gap-2">
+                <a asp-controller="Venues" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Add Space</a>
+                <a asp-controller="Venues" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Management -->
+    <div class="col-md-4">
+        <div class="card glass-card h-100 p-4">
+            <div class="mb-3 text-info">
+                <span class="p-3 bg-info bg-opacity-10 rounded-3 d-inline-block">
+                    <i class="bi bi-calendar-event fs-3"></i>
+                </span>
+            </div>
+            <h4 class="fw-bold mb-2">Event Requests</h4>
+            <p class="text-muted mb-4">Log new client requests, designate preferred venues, and follow booking status pipelines.</p>
+            <div class="mt-auto d-flex gap-2">
+                <a asp-controller="Events" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Log Request</a>
+                <a asp-controller="Events" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookings Management -->
+    <div class="col-md-4">
+        <div class="card glass-card h-100 p-4">
+            <div class="mb-3 text-accent" style="color: var(--accent-color);">
+                <span class="p-3 rounded-3 d-inline-block" style="background-color: rgba(168, 85, 247, 0.1);">
+                    <i class="bi bi-journal-bookmark-fill fs-3"></i>
+                </span>
+            </div>
+            <h4 class="fw-bold mb-2">Bookings</h4>
+            <p class="text-muted mb-4">Assign specialists, compute rental durations, and dynamically check capacity boundaries.</p>
+            <div class="mt-auto d-flex gap-2">
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Assign Booking</a>
+                <a asp-controller="Bookings" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Database Constraints Alert Box -->
+<div class="alert alert-info glass-card border-info border-opacity-25 p-4 d-flex align-items-start gap-3" role="alert">
+    <i class="bi bi-info-circle-fill text-info fs-3"></i>
+    <div>
+        <h5 class="alert-heading fw-bold mb-1">System Integration Details</h5>
+        <p class="mb-0 small text-muted">
+            EventEase is connected to a live SQL Server schema implementing strict relational controls: 
+            <strong>1:1 Booking unique limits</strong> prevent double scheduling of events, and 
+            <strong>restricted delete keys</strong> safeguard venues with historical booking logs.
+        </p>
+    </div>
+</div>

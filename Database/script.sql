@@ -1,0 +1,107 @@
+-- ============================================================================
+-- EventEase App Database Setup Script
+-- Engine: Microsoft SQL Server (T-SQL)
+-- Features: Table Creation, Entity Integrity, Referential Integrity & Sample Data
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 0. CLEANUP (Drop tables in reverse dependency order if re-running)
+-- ----------------------------------------------------------------------------
+IF OBJECT_ID('dbo_Bookings', 'U') IS NOT NULL DROP TABLE dbo_Bookings;
+IF OBJECT_ID('dbo_Events', 'U') IS NOT NULL DROP TABLE dbo_Events;
+IF OBJECT_ID('dbo_Venues', 'U') IS NOT NULL DROP TABLE dbo_Venues;
+GO
+
+-- ----------------------------------------------------------------------------
+-- 1. TABLE CREATION & ENTITY INTEGRITY
+-- ----------------------------------------------------------------------------
+
+-- A. Table: dbo_Venues
+CREATE TABLE dbo_Venues (
+    Id NVARCHAR(450) NOT NULL,
+    Name NVARCHAR(200) NOT NULL,
+    Location NVARCHAR(200) NOT NULL,
+    Capacity INT NOT NULL,
+    HourlyRate DECIMAL(18, 2) NOT NULL,
+    ImageUrl NVARCHAR(MAX) NULL,
+    AmenitiesJson NVARCHAR(MAX) NULL,
+    Status NVARCHAR(50) NOT NULL CONSTRAINT DF_dbo_Venues_Status DEFAULT 'Active',
+    Description NVARCHAR(MAX) NULL,
+    
+    -- Entity Integrity (Primary Key) & Validation Constraints
+    CONSTRAINT PK_dbo_Venues PRIMARY KEY (Id),
+    CONSTRAINT CK_dbo_Venues_Capacity CHECK (Capacity > 0),
+    CONSTRAINT CK_dbo_Venues_HourlyRate CHECK (HourlyRate >= 0.00)
+);
+GO
+
+-- B. Table: dbo_Events
+CREATE TABLE dbo_Events (
+    Id NVARCHAR(450) NOT NULL,
+    Title NVARCHAR(250) NOT NULL,
+    ClientName NVARCHAR(150) NOT NULL,
+    ClientEmail NVARCHAR(200) NOT NULL,
+    ExpectedAttendance INT NOT NULL CONSTRAINT DF_dbo_Events_ExpectedAttendance DEFAULT 0,
+    StartDate DATETIME2 NOT NULL,
+    EndDate DATETIME2 NOT NULL,
+    VenueId NVARCHAR(450) NULL,
+    Status NVARCHAR(50) NOT NULL CONSTRAINT DF_dbo_Events_Status DEFAULT 'Unassigned',
+    
+    -- Entity Integrity (Primary Key) & Validation Constraints
+    CONSTRAINT PK_dbo_Events PRIMARY KEY (Id),
+    CONSTRAINT CK_dbo_Events_Dates CHECK (EndDate >= StartDate),
+    CONSTRAINT CK_dbo_Events_Attendance CHECK (ExpectedAttendance >= 0)
+);
+GO
+
+-- C. Table: dbo_Bookings
+CREATE TABLE dbo_Bookings (
+    Id NVARCHAR(450) NOT NULL,
+    BookingCode NVARCHAR(100) NOT NULL,
+    VenueId NVARCHAR(450) NOT NULL,
+    EventId NVARCHAR(450) NOT NULL,
+    SpecialistName NVARCHAR(150) NOT NULL,
+    StartDate DATETIME2 NOT NULL,
+    EndDate DATETIME2 NOT NULL,
+    TotalCost DECIMAL(18, 2) NOT NULL,
+    Status NVARCHAR(50) NOT NULL CONSTRAINT DF_dbo_Bookings_Status DEFAULT 'Confirmed',
+    
+    -- Entity Integrity (Primary Key, Unique Code, Dates & Cost Validation)
+    CONSTRAINT PK_dbo_Bookings PRIMARY KEY (Id),
+    CONSTRAINT UQ_dbo_Bookings_BookingCode UNIQUE (BookingCode),
+    CONSTRAINT UQ_dbo_Bookings_EventId UNIQUE (EventId), -- ERD 1:1 Unique Constraint for Event-Booking
+    CONSTRAINT CK_dbo_Bookings_Dates CHECK (EndDate >= StartDate),
+    CONSTRAINT CK_dbo_Bookings_TotalCost CHECK (TotalCost >= 0.00)
+);
+GO
+
+-- ----------------------------------------------------------------------------
+-- 2. REFERENTIAL INTEGRITY (Foreign Keys & Indexes)
+-- ----------------------------------------------------------------------------
+
+-- FK 1: dbo_Events -> dbo_Venues (1:N, Nullable - Setting VenueId to NULL if Venue is deleted)
+ALTER TABLE dbo_Events
+    ADD CONSTRAINT FK_dbo_Events_dbo_Venues_VenueId
+    FOREIGN KEY (VenueId) REFERENCES dbo_Venues (Id)
+    ON DELETE SET NULL;
+GO
+
+-- FK 2: dbo_Bookings -> dbo_Venues (1:N, Restrict deletion of Venue if active Bookings exist)
+ALTER TABLE dbo_Bookings
+    ADD CONSTRAINT FK_dbo_Bookings_dbo_Venues_VenueId
+    FOREIGN KEY (VenueId) REFERENCES dbo_Venues (Id)
+    ON DELETE NO ACTION;
+GO
+
+-- FK 3: dbo_Bookings -> dbo_Events (1:1, Restrict deletion of Event if active Booking exists)
+ALTER TABLE dbo_Bookings
+    ADD CONSTRAINT FK_dbo_Bookings_dbo_Events_EventId
+    FOREIGN KEY (EventId) REFERENCES dbo_Events (Id)
+    ON DELETE NO ACTION;
+GO
+
+-- Performance & Integrity Indexes
+CREATE INDEX IX_dbo_Events_VenueId ON dbo_Events (VenueId);
+CREATE INDEX IX_dbo_Bookings_VenueId ON dbo_Bookings (VenueId);
+CREATE UNIQUE INDEX IX_dbo_Bookings_EventId ON dbo_Bookings (EventId);
+GO

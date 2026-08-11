@@ -1,0 +1,85 @@
+@model EventEaseApp.Models.Event
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 fw-bold mb-0 text-gradient"><i class="bi bi-calendar-event me-2 text-primary"></i>Create New Event</h2>
+            <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+        </div>
+
+        <div class="card glass-card p-4 p-md-5">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+
+                <div class="row g-4">
+                    <!-- Left Column: Event Specs -->
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold text-primary mb-3">Event Specifications</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Event Title</label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g. Annual Tech Symposium" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="VenueId" class="form-label">Preferred Venue (Optional)</label>
+                            <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId">
+                                <option value="">-- No Preferred Venue / Unassigned --</option>
+                            </select>
+                            <span asp-validation-for="VenueId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ExpectedAttendance" class="form-label">Expected Attendance (Pax)</label>
+                            <input asp-for="ExpectedAttendance" type="number" class="form-control" placeholder="e.g. 150" />
+                            <span asp-validation-for="ExpectedAttendance" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Client & Schedule -->
+                    <div class="col-md-6">
+                        <h5 class="fw-semibold text-primary mb-3">Client & Schedule</h5>
+
+                        <div class="mb-3">
+                            <label asp-for="ClientName" class="form-label">Client Name</label>
+                            <input asp-for="ClientName" class="form-control" placeholder="e.g. John Doe" />
+                            <span asp-validation-for="ClientName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ClientEmail" class="form-label">Client Email Address</label>
+                            <input asp-for="ClientEmail" type="email" class="form-control" placeholder="e.g. john@example.com" />
+                            <span asp-validation-for="ClientEmail" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label asp-for="StartDate" class="form-label">Starts At</label>
+                                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label asp-for="EndDate" class="form-label">Ends At</label>
+                                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary px-4 py-2"><i class="bi bi-check-circle-fill me-1"></i> Save Event Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
