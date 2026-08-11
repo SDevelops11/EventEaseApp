@@ -1,11 +1,5 @@
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\web.config
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\appsettings.json
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\appsettings.Development.json
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\appsettings.json
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\EventEaseApp.deps.json
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\EventEaseApp.runtimeconfig.json
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\publish\EventEaseApp.staticwebassets.endpoints.json
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\EventEaseApp.staticwebassets.runtime.json
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\EventEaseApp.staticwebassets.endpoints.json
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\bin\Debug\net10.0\EventEaseApp.exe
@@ -225,7 +219,8 @@ C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEa
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\EventEaseApp.pdb
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\EventEaseApp.genruntimeconfig.cache
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\ref\EventEaseApp.dll
-C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\compressed\i0p7i58iw4-{0}-gjzhkkwd3f-gjzhkkwd3f.gz
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\compressed\2ajrh0b02q-{0}-esks4io121-esks4io121.gz
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\compressed\sm3lerddz8-{0}-esks4io121-esks4io121.gz
 C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\compressed\52axym03zj-{0}-du9zf96ukh-du9zf96ukh.gz
+C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\EventEaseApp.sourcelink.json
+C:\Users\Sahir\Desktop\Stuff\_Rosebank College\CLDV7111 - Activity 1.1.1\EventEase\EventEaseApp\obj\Debug\net10.0\compressed\i0p7i58iw4-{0}-oh0iro1br8-oh0iro1br8.gz

@@ -16,21 +16,21 @@ namespace EventEaseApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Venue -> Events (1:N, Nullable FK)
+            // Configure Venue to Events relationship
             modelBuilder.Entity<Event>()
                 .HasOne(e => e.Venue)
                 .WithMany(v => v.Events)
                 .HasForeignKey(e => e.VenueId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // 2. Venue -> Bookings (1:N, Restrict Delete)
+            // Configure Venue to Bookings relationship
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Venue)
                 .WithMany(v => v.Bookings)
                 .HasForeignKey(b => b.VenueId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 3. Event -> Booking (1:1, Unique Constraint, Restrict Delete)
+            // Configure Event to Booking 1-to-1 relationship
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Event)
                 .WithOne(e => e.Booking)

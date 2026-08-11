@@ -28,7 +28,7 @@ namespace EventEaseApp.Controllers
         // GET: Bookings/Create
         public async Task<IActionResult> Create()
         {
-            // ERD Rule: Filter out Events that are ALREADY booked (1:1 Constraint)
+            // Fetch events that haven't been booked yet
             var unbookedEvents = await _context.Events
                 .Where(e => !_context.Bookings.Any(b => b.EventId == e.Id))
                 .ToListAsync();
@@ -55,7 +55,7 @@ namespace EventEaseApp.Controllers
             ModelState.Remove("Venue");
             ModelState.Remove("Event");
 
-            // Prevent double-booking constraint check
+            // Check if event is already booked
             bool alreadyBooked = await _context.Bookings.AnyAsync(b => b.EventId == booking.EventId);
             if (alreadyBooked)
             {
@@ -64,10 +64,10 @@ namespace EventEaseApp.Controllers
 
             if (ModelState.IsValid)
             {
-                // 1. Generate unique booking code
+                // Generate unique booking code
                 booking.BookingCode = "BK-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
 
-                // 2. Calculate Total Cost based on Venue Hourly Rate
+                // Calculate total cost based on duration and hourly rate
                 var venue = await _context.Venues.FindAsync(booking.VenueId);
                 if (venue != null)
                 {
@@ -75,12 +75,12 @@ namespace EventEaseApp.Controllers
                     booking.TotalCost = venue.HourlyRate * (decimal)(hours > 0 ? hours : 1);
                 }
 
-                // 3. Update associated Event Status to 'Booked'
+                // Update event status and venue assignment
                 var selectedEvent = await _context.Events.FindAsync(booking.EventId);
                 if (selectedEvent != null)
                 {
                     selectedEvent.Status = "Booked";
-                    selectedEvent.VenueId = booking.VenueId; // Set final assigned venue
+                    selectedEvent.VenueId = booking.VenueId;
                     _context.Update(selectedEvent);
                 }
 

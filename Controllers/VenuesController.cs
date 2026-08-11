@@ -56,7 +56,7 @@ namespace EventEaseApp.Controllers
             }
             catch (DbUpdateException)
             {
-                // Handles ERD Restrict Rule: Cannot delete venue with existing bookings
+                // Prevent deletion if venue has associated bookings
                 TempData["ErrorMessage"] = "Cannot delete this venue because it has active or historical bookings.";
                 return RedirectToAction(nameof(Index));
             }

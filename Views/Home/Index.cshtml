@@ -6,9 +6,9 @@
 <div class="hero-gradient mb-5 text-center text-md-start">
     <div class="row align-items-center g-4">
         <div class="col-md-7 ps-md-5">
-            <span class="badge bg-light text-primary fw-bold px-3 py-2 rounded-pill mb-3 uppercase tracking-wider">v1.0 Release</span>
+            <span class="badge bg-light text-primary fw-bold px-3 py-2 rounded-pill mb-3">EventEase App</span>
             <h1 class="display-4 fw-extrabold text-white tracking-tight mb-3">Event Planning, <br>Simplified.</h1>
-            <p class="lead text-white-50 mb-4">Manage venues, event details, and specialist scheduling seamlessly in one premium unified system.</p>
+            <p class="lead text-white-50 mb-4">Manage venues, event details, and specialist scheduling in one place.</p>
             <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
                 <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary btn-lg px-4 py-3"><i class="bi bi-calendar-check me-2"></i>New Booking</a>
                 <a asp-controller="Venues" asp-action="Index" class="btn btn-secondary btn-lg px-4 py-3 text-dark"><i class="bi bi-building me-2"></i>Explore Venues</a>
@@ -21,7 +21,7 @@
 </div>
 
 <!-- Features & Navigation Cards -->
-<h3 class="fw-bold mb-4">Quick Workflows</h3>
+<h3 class="fw-bold mb-4">Quick Navigation</h3>
 <div class="row g-4 mb-5">
     <!-- Venues Management -->
     <div class="col-md-4">
@@ -32,9 +32,9 @@
                 </span>
             </div>
             <h4 class="fw-bold mb-2">Venues</h4>
-            <p class="text-muted mb-4">Add, view, and organize event spaces. Track capacity, amenities, and hourly rates dynamically.</p>
+            <p class="text-muted mb-4">Add, view, and organize event spaces. Track capacity, amenities, and hourly rates.</p>
             <div class="mt-auto d-flex gap-2">
-                <a asp-controller="Venues" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Add Space</a>
+                <a asp-controller="Venues" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Add Venue</a>
                 <a asp-controller="Venues" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 </span>
             </div>
             <h4 class="fw-bold mb-2">Event Requests</h4>
-            <p class="text-muted mb-4">Log new client requests, designate preferred venues, and follow booking status pipelines.</p>
+            <p class="text-muted mb-4">Log new client requests, designate preferred venues, and follow booking status.</p>
             <div class="mt-auto d-flex gap-2">
                 <a asp-controller="Events" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Log Request</a>
                 <a asp-controller="Events" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
@@ -66,7 +66,7 @@
                 </span>
             </div>
             <h4 class="fw-bold mb-2">Bookings</h4>
-            <p class="text-muted mb-4">Assign specialists, compute rental durations, and dynamically check capacity boundaries.</p>
+            <p class="text-muted mb-4">Assign specialists, compute rental durations, and check venue availability.</p>
             <div class="mt-auto d-flex gap-2">
                 <a asp-controller="Bookings" asp-action="Create" class="btn btn-primary btn-sm flex-fill">Assign Booking</a>
                 <a asp-controller="Bookings" asp-action="Index" class="btn btn-secondary btn-sm flex-fill">View List</a>
@@ -79,11 +79,11 @@
 <div class="alert alert-info glass-card border-info border-opacity-25 p-4 d-flex align-items-start gap-3" role="alert">
     <i class="bi bi-info-circle-fill text-info fs-3"></i>
     <div>
-        <h5 class="alert-heading fw-bold mb-1">System Integration Details</h5>
+        <h5 class="alert-heading fw-bold mb-1">Database Constraints</h5>
         <p class="mb-0 small text-muted">
-            EventEase is connected to a live SQL Server schema implementing strict relational controls: 
+            EventEase is connected to a SQL Server database with strict constraints: 
             <strong>1:1 Booking unique limits</strong> prevent double scheduling of events, and 
-            <strong>restricted delete keys</strong> safeguard venues with historical booking logs.
+            <strong>restricted deletion</strong> prevents deleting venues that have active bookings.
         </p>
     </div>
 </div>
