@@ -37,6 +37,7 @@ CREATE TABLE dbo_Events (
     EndDate DATETIME2 NOT NULL,
     VenueId NVARCHAR(450) NULL,
     Status NVARCHAR(50) NOT NULL CONSTRAINT DF_dbo_Events_Status DEFAULT 'Unassigned',
+    ImageUrl NVARCHAR(MAX) NULL,
     
     CONSTRAINT PK_dbo_Events PRIMARY KEY (Id),
     CONSTRAINT CK_dbo_Events_Dates CHECK (EndDate >= StartDate),

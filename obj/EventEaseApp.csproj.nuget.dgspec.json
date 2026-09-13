@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111 - Activity 1.1.1\\EventEase\\EventEaseApp\\EventEaseApp.csproj": {}
+    "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111\\EventEase\\EventEaseApp\\EventEaseApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111 - Activity 1.1.1\\EventEase\\EventEaseApp\\EventEaseApp.csproj": {
+    "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111\\EventEase\\EventEaseApp\\EventEaseApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111 - Activity 1.1.1\\EventEase\\EventEaseApp\\EventEaseApp.csproj",
+        "projectUniqueName": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111\\EventEase\\EventEaseApp\\EventEaseApp.csproj",
         "projectName": "EventEaseApp",
-        "projectPath": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111 - Activity 1.1.1\\EventEase\\EventEaseApp\\EventEaseApp.csproj",
+        "projectPath": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111\\EventEase\\EventEaseApp\\EventEaseApp.csproj",
         "packagesPath": "C:\\Users\\Sahir\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111 - Activity 1.1.1\\EventEase\\EventEaseApp\\obj\\",
+        "outputPath": "C:\\Users\\Sahir\\Desktop\\Stuff\\_Rosebank College\\CLDV7111\\EventEase\\EventEaseApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -52,6 +52,10 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.29.2, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",

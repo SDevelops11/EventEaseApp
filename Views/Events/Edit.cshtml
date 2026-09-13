@@ -1,18 +1,20 @@
 @model EventEaseApp.Models.Event
 
 @{
-    ViewData["Title"] = "Create Event";
+    ViewData["Title"] = "Edit Event";
 }
 
 <div class="row justify-content-center">
     <div class="col-lg-10 col-xl-8">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h3 fw-bold mb-0 text-gradient"><i class="bi bi-calendar-event me-2 text-primary"></i>Create New Event</h2>
+            <h2 class="h3 fw-bold mb-0 text-gradient"><i class="bi bi-pencil-square me-2 text-primary"></i>Edit Event</h2>
             <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
         </div>
 
         <div class="card glass-card p-4 p-md-5">
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Status" />
                 <div asp-validation-summary="All" class="alert alert-danger mb-4" role="alert"></div>
 
                 <div class="row g-4">
@@ -40,15 +42,25 @@
                             <span asp-validation-for="ExpectedAttendance" class="text-danger small"></span>
                         </div>
 
-                        <!-- Event Poster / Image Upload Area -->
+                        <!-- Image Upload & Preview Section -->
                         <div class="p-3 mt-3 rounded-3 border bg-light bg-opacity-50">
+                            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                            {
+                                <div class="mb-3">
+                                    <div class="small fw-semibold text-muted mb-1">Current Event Poster:</div>
+                                    <div class="rounded-3 overflow-hidden border shadow-sm" style="height: 140px; background-color: #f8fafc;">
+                                        <img id="currentEventImg" src="@Model.ImageUrl" alt="@Model.Title" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='/images/default-venue.svg';" />
+                                    </div>
+                                </div>
+                            }
+
                             <label class="form-label d-flex justify-content-between align-items-center">
-                                <span>Event Flyer / Poster Image</span>
+                                <span>Upload New Event Poster</span>
                                 <span class="badge bg-primary bg-opacity-10 text-primary small"><i class="bi bi-cloud-arrow-up me-1"></i>Azure Storage</span>
                             </label>
-                            <input type="file" name="imageFile" id="eventImageFile" accept="image/*" class="form-control" onchange="previewImage(this, 'eventImgPreview', 'eventPreviewBox')" />
+                            <input type="file" name="imageFile" id="editEventImageFile" accept="image/*" class="form-control" onchange="previewImage(this, 'editEventImgPreview', 'editEventPreviewBox')" />
                             <div class="form-text extra-small text-muted mt-1">
-                                Upload image directly to Azure Blob Storage or provide an external URL below.
+                                Upload a new image to replace the current poster in Azure Blob Storage.
                             </div>
 
                             <div class="text-center my-2 position-relative">
@@ -57,13 +69,13 @@
                             </div>
 
                             <label asp-for="ImageUrl" class="form-label small">External Image / Poster URL</label>
-                            <input asp-for="ImageUrl" id="eventUrlInput" class="form-control form-control-sm" placeholder="https://example.com/poster.jpg" oninput="previewUrl(this.value, 'eventImgPreview', 'eventPreviewBox')" />
+                            <input asp-for="ImageUrl" id="editEventUrlInput" class="form-control form-control-sm" placeholder="https://example.com/poster.jpg" oninput="previewUrl(this.value, 'editEventImgPreview', 'editEventPreviewBox')" />
                             <span asp-validation-for="ImageUrl" class="text-danger small"></span>
 
-                            <div id="eventPreviewBox" class="mt-3 text-center d-none">
-                                <div class="small fw-semibold text-muted mb-1 text-start">Poster Preview:</div>
+                            <div id="editEventPreviewBox" class="mt-3 text-center d-none">
+                                <div class="small fw-semibold text-primary mb-1 text-start">New Poster Preview:</div>
                                 <div class="rounded-3 overflow-hidden border shadow-sm" style="height: 140px; background-color: #f8fafc;">
-                                    <img id="eventImgPreview" src="#" alt="Event Preview" class="w-100 h-100" style="object-fit: cover;" />
+                                    <img id="editEventImgPreview" src="#" alt="New Preview" class="w-100 h-100" style="object-fit: cover;" />
                                 </div>
                             </div>
                         </div>
@@ -101,7 +113,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                    <button type="submit" class="btn btn-primary px-4 py-2"><i class="bi bi-check-circle-fill me-1"></i> Save Event Request</button>
+                    <button type="submit" class="btn btn-primary px-4 py-2"><i class="bi bi-save me-1"></i> Save Changes</button>
                 </div>
             </form>
         </div>

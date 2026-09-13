@@ -7,7 +7,32 @@ namespace EventEaseApp.Data
     {
         public static void Initialize(ApplicationDbContext context)
         {
-            context.Database.Migrate();
+            try
+            {
+                context.Database.Migrate();
+            }
+            catch (Exception)
+            {
+                context.Database.EnsureCreated();
+            }
+
+            // Ensure ImageUrl column exists in dbo_Events if table was previously created without it
+            try
+            {
+                context.Database.ExecuteSqlRaw(@"
+                    IF OBJECT_ID('dbo_Events', 'U') IS NOT NULL AND NOT EXISTS (
+                        SELECT * FROM sys.columns 
+                        WHERE object_id = OBJECT_ID('dbo_Events') AND name = 'ImageUrl'
+                    )
+                    BEGIN
+                        ALTER TABLE dbo_Events ADD ImageUrl NVARCHAR(MAX) NULL;
+                    END
+                ");
+            }
+            catch
+            {
+                // Fallback safe ignore
+            }
 
             // Check if any venues exist
             if (context.Venues.Any())
@@ -70,6 +95,7 @@ namespace EventEaseApp.Data
                     StartDate = DateTime.Now.AddDays(7),
                     EndDate = DateTime.Now.AddDays(7).AddHours(8),
                     VenueId = "v-003",
+                    ImageUrl = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
                     Status = "Booked"
                 },
                 new Event
@@ -82,6 +108,7 @@ namespace EventEaseApp.Data
                     StartDate = DateTime.Now.AddDays(14),
                     EndDate = DateTime.Now.AddDays(14).AddHours(6),
                     VenueId = "v-001",
+                    ImageUrl = "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
                     Status = "Booked"
                 },
                 new Event
@@ -94,6 +121,7 @@ namespace EventEaseApp.Data
                     StartDate = DateTime.Now.AddDays(21),
                     EndDate = DateTime.Now.AddDays(21).AddHours(6),
                     VenueId = null,
+                    ImageUrl = "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80",
                     Status = "Unassigned"
                 }
             };

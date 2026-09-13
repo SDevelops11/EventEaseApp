@@ -38,6 +38,7 @@ namespace EventEaseApp.Models
         public DateTime EndDate { get; set; } = DateTime.Now.AddHours(2);
 
         [ValidateNever]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalCost { get; set; }
 
         [Required]

@@ -1,0 +1,208 @@
+@model EventEaseApp.Models.SearchViewModel
+
+@{
+    ViewData["Title"] = "Search Hub";
+}
+
+<!-- Search Header -->
+<div class="card glass-card p-4 p-md-5 mb-4 text-center">
+    <div class="max-w-700 mx-auto">
+        <h2 class="h3 fw-bold mb-2 text-gradient"><i class="bi bi-search me-2 text-primary"></i>Global Search Hub</h2>
+        <p class="text-muted small mb-4">Browse and discover venues, event requests, and specialist bookings across EventEase.</p>
+
+        <form asp-action="Index" method="get">
+            <div class="input-group input-group-lg shadow-sm mb-3">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="query" value="@Model.Query" class="form-control border-start-0" placeholder="Search by venue, event title, client, specialist, code..." autofocus />
+                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-arrow-right-circle me-1"></i> Search</button>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <button type="submit" name="category" value="All" class="btn btn-sm @(Model.Category == "All" ? "btn-primary" : "btn-secondary")">
+                    All Categories
+                </button>
+                <button type="submit" name="category" value="Venues" class="btn btn-sm @(Model.Category == "Venues" ? "btn-primary" : "btn-secondary")">
+                    <i class="bi bi-bank me-1"></i> Venues
+                </button>
+                <button type="submit" name="category" value="Events" class="btn btn-sm @(Model.Category == "Events" ? "btn-primary" : "btn-secondary")">
+                    <i class="bi bi-calendar-event me-1"></i> Events
+                </button>
+                <button type="submit" name="category" value="Bookings" class="btn btn-sm @(Model.Category == "Bookings" ? "btn-primary" : "btn-secondary")">
+                    <i class="bi bi-journal-bookmark-fill me-1"></i> Bookings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (string.IsNullOrWhiteSpace(Model.Query))
+{
+    <!-- Search Suggestions Prompt -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card glass-card p-4 text-center h-100">
+                <i class="bi bi-bank fs-1 text-primary mb-2"></i>
+                <h5 class="fw-bold">Search Venues</h5>
+                <p class="text-muted small mb-3">Find spaces by name, city or area, capacity limits, or hourly rates.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-1">
+                    <a asp-action="Index" asp-route-query="Ballroom" asp-route-category="Venues" class="badge bg-light text-dark border text-decoration-none">Ballroom</a>
+                    <a asp-action="Index" asp-route-query="Cape Town" asp-route-category="Venues" class="badge bg-light text-dark border text-decoration-none">Cape Town</a>
+                    <a asp-action="Index" asp-route-query="Pavilion" asp-route-category="Venues" class="badge bg-light text-dark border text-decoration-none">Pavilion</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card glass-card p-4 text-center h-100">
+                <i class="bi bi-calendar-event fs-1 text-info mb-2"></i>
+                <h5 class="fw-bold">Search Events</h5>
+                <p class="text-muted small mb-3">Lookup client requests, symposiums, galas, and booking statuses.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-1">
+                    <a asp-action="Index" asp-route-query="Summit" asp-route-category="Events" class="badge bg-light text-dark border text-decoration-none">Summit</a>
+                    <a asp-action="Index" asp-route-query="Gala" asp-route-category="Events" class="badge bg-light text-dark border text-decoration-none">Gala</a>
+                    <a asp-action="Index" asp-route-query="Expo" asp-route-category="Events" class="badge bg-light text-dark border text-decoration-none">Expo</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card glass-card p-4 text-center h-100">
+                <i class="bi bi-journal-bookmark-fill fs-1 text-accent mb-2" style="color: var(--accent-color);"></i>
+                <h5 class="fw-bold">Search Bookings</h5>
+                <p class="text-muted small mb-3">Quickly locate booking codes, scheduled specialists, and cost totals.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-1">
+                    <a asp-action="Index" asp-route-query="BK-" asp-route-category="Bookings" class="badge bg-light text-dark border text-decoration-none">BK- codes</a>
+                    <a asp-action="Index" asp-route-query="David" asp-route-category="Bookings" class="badge bg-light text-dark border text-decoration-none">David</a>
+                    <a asp-action="Index" asp-route-query="Amanda" asp-route-category="Bookings" class="badge bg-light text-dark border text-decoration-none">Amanda</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (Model.TotalCount == 0)
+{
+    <!-- No Results Found -->
+    <div class="card glass-card p-5 text-center text-muted">
+        <i class="bi bi-search display-3 mb-3 text-secondary"></i>
+        <h4>No results found for "@Model.Query"</h4>
+        <p class="mb-3">Try checking your spelling or using more general keywords across venues, events, or bookings.</p>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary px-4"><i class="bi bi-arrow-counterclockwise me-1"></i> Clear Search</a>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Results Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="text-muted">Results for:</span>
+            <strong class="fs-5 text-dark ms-1">"@Model.Query"</strong>
+        </div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 fs-6">
+            @Model.TotalCount match@(Model.TotalCount > 1 ? "es" : "") found
+        </span>
+    </div>
+
+    <!-- 1. Venues Results -->
+    @if (Model.Venues.Any())
+    {
+        <div class="mb-5">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h4 class="h5 fw-bold mb-0 text-primary"><i class="bi bi-bank me-2"></i>Venues (@Model.Venues.Count)</h4>
+                <a asp-controller="Venues" asp-action="Index" asp-route-searchTerm="@Model.Query" class="small text-decoration-none">Browse all matching venues &rarr;</a>
+            </div>
+
+            <div class="row g-3">
+                @foreach (var venue in Model.Venues)
+                {
+                    var venueImg = string.IsNullOrWhiteSpace(venue.ImageUrl) ? "/images/default-venue.svg" : venue.ImageUrl;
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card glass-card h-100 p-3 border-0 shadow-sm d-flex flex-column">
+                            <div class="d-flex gap-3 mb-2">
+                                <img src="@venueImg" alt="@venue.Name" class="rounded-3 shadow-sm flex-shrink-0" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='/images/default-venue.svg';" />
+                                <div class="overflow-hidden">
+                                    <div class="fw-bold text-truncate">@venue.Name</div>
+                                    <div class="text-muted extra-small"><i class="bi bi-geo-alt text-danger me-1"></i>@venue.Location</div>
+                                    <div class="extra-small text-success fw-bold mt-1">R @venue.HourlyRate.ToString("N2")/hr</div>
+                                </div>
+                            </div>
+                            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark border">Cap: @venue.Capacity</span>
+                                <a asp-controller="Venues" asp-action="Edit" asp-route-id="@venue.Id" class="btn btn-outline-primary btn-sm">Edit Venue</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- 2. Events Results -->
+    @if (Model.Events.Any())
+    {
+        <div class="mb-5">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h4 class="h5 fw-bold mb-0 text-info"><i class="bi bi-calendar-event me-2"></i>Events (@Model.Events.Count)</h4>
+                <a asp-controller="Events" asp-action="Index" asp-route-searchTerm="@Model.Query" class="small text-decoration-none">Browse all matching events &rarr;</a>
+            </div>
+
+            <div class="row g-3">
+                @foreach (var ev in Model.Events)
+                {
+                    var poster = string.IsNullOrWhiteSpace(ev.ImageUrl) ? "/images/default-venue.svg" : ev.ImageUrl;
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card glass-card h-100 p-3 border-0 shadow-sm d-flex flex-column">
+                            <div class="d-flex gap-3 mb-2">
+                                <img src="@poster" alt="@ev.Title" class="rounded-3 shadow-sm flex-shrink-0" style="width: 70px; height: 70px; object-fit: cover;" onerror="this.src='/images/default-venue.svg';" />
+                                <div class="overflow-hidden">
+                                    <div class="fw-bold text-truncate" title="@ev.Title">@ev.Title</div>
+                                    <div class="text-muted extra-small"><i class="bi bi-person me-1"></i>@ev.ClientName</div>
+                                    <div class="extra-small text-muted"><i class="bi bi-clock me-1"></i>@ev.StartDate.ToString("dd MMM yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary bg-opacity-10 text-primary">@ev.Status</span>
+                                <a asp-controller="Events" asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-outline-info btn-sm">View Request</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- 3. Bookings Results -->
+    @if (Model.Bookings.Any())
+    {
+        <div class="mb-5">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h4 class="h5 fw-bold mb-0 text-dark"><i class="bi bi-journal-bookmark-fill me-2 text-primary"></i>Bookings (@Model.Bookings.Count)</h4>
+                <a asp-controller="Bookings" asp-action="Index" asp-route-searchTerm="@Model.Query" class="small text-decoration-none">Browse all matching bookings &rarr;</a>
+            </div>
+
+            <div class="row g-3">
+                @foreach (var bk in Model.Bookings)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card glass-card h-100 p-3 border-0 shadow-sm d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-dark font-monospace">@bk.BookingCode</span>
+                                <span class="badge bg-success bg-opacity-10 text-success">@bk.Status</span>
+                            </div>
+                            <div class="fw-bold text-truncate mb-1">@(bk.Event?.Title ?? "Event")</div>
+                            <div class="text-muted small mb-2"><i class="bi bi-bank me-1"></i>@(bk.Venue?.Name ?? "Venue")</div>
+                            <div class="extra-small text-muted mb-2">
+                                <div><i class="bi bi-person-check me-1"></i>Specialist: @bk.SpecialistName</div>
+                                <div><i class="bi bi-calendar me-1"></i>@bk.StartDate.ToString("yyyy-MM-dd HH:mm")</div>
+                            </div>
+                            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-success">R @bk.TotalCost.ToString("N2")</span>
+                                <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@bk.Id" class="btn btn-outline-primary btn-sm">Edit Booking</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}

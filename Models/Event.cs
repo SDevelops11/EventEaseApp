@@ -38,6 +38,8 @@ namespace EventEaseApp.Models
         [StringLength(50)]
         public string Status { get; set; } = "Unassigned"; // Unassigned | Booked | Completed | Cancelled
 
+        public string? ImageUrl { get; set; }
+
         // Navigation Property (1:1 Relationship with Booking)
         public Booking? Booking { get; set; }
     }

@@ -1,0 +1,46 @@
+## Ignore Visual Studio / .NET build artifacts
+bin/
+obj/
+out/
+[Bb]in/
+[Oo]bj/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Visual Studio cache & temporary files
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+## Publish output & Local uploads
+*.deploymanifest
+*.publishproj
+publish/
+wwwroot/uploads/
+
+## Environment & secrets
+appsettings.Local.json
+appsettings.json
+*.local.json
+secrets.json
+
+## Logs & Diagnostics
+*.log
+*.tmp
+*.crash
+
+## OS generated files
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+.DS_Store
+AGENTS.md
+PROJECT_OVERVIEW.md

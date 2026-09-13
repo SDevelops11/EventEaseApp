@@ -111,7 +111,7 @@ ALTER TABLE dbo_Bookings
     ON DELETE NO ACTION;
 GO
 
--- Indexes..
+-- Indexes
 CREATE INDEX IX_dbo_Events_VenueId ON dbo_Events (VenueId);
 CREATE INDEX IX_dbo_Bookings_VenueId ON dbo_Bookings (VenueId);
 CREATE UNIQUE INDEX IX_dbo_Bookings_EventId ON dbo_Bookings (EventId);
