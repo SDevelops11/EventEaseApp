@@ -16,11 +16,19 @@ namespace EventEaseApp.Controllers
         }
 
         // GET: Bookings with Multi-Criteria Search & Consolidated Analytics
-        public async Task<IActionResult> Index(string? searchTerm, string? status, string? venueId, DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> Index(
+            string? searchTerm, 
+            string? status, 
+            string? venueId, 
+            string? eventTypeId, 
+            string? venueAvailability, 
+            DateTime? fromDate, 
+            DateTime? toDate)
         {
             var query = _context.Bookings
                 .Include(b => b.Venue)
                 .Include(b => b.Event)
+                    .ThenInclude(e => e!.EventType)
                 .AsQueryable();
 
             // Overall metrics for KPI summary cards
@@ -36,6 +44,7 @@ namespace EventEaseApp.Controllers
                 query = query.Where(b => b.BookingCode.ToLower().Contains(term) ||
                                          b.SpecialistName.ToLower().Contains(term) ||
                                          (b.Event != null && b.Event.Title.ToLower().Contains(term)) ||
+                                         (b.Event != null && b.Event.EventType != null && b.Event.EventType.Name.ToLower().Contains(term)) ||
                                          (b.Venue != null && b.Venue.Name.ToLower().Contains(term)));
             }
 
@@ -49,6 +58,26 @@ namespace EventEaseApp.Controllers
                 query = query.Where(e => e.VenueId == venueId);
             }
 
+            // Part 3 Filter: Event Type Classification
+            if (!string.IsNullOrWhiteSpace(eventTypeId) && eventTypeId != "All")
+            {
+                query = query.Where(b => b.Event != null && b.Event.EventTypeId == eventTypeId);
+            }
+
+            // Part 3 Filter: Venue Availability
+            if (!string.IsNullOrWhiteSpace(venueAvailability) && venueAvailability != "All")
+            {
+                if (venueAvailability == "Available")
+                {
+                    query = query.Where(b => b.Venue != null && b.Venue.IsAvailable);
+                }
+                else if (venueAvailability == "Unavailable")
+                {
+                    query = query.Where(b => b.Venue != null && !b.Venue.IsAvailable);
+                }
+            }
+
+            // Part 3 Filter: Date Range
             if (fromDate.HasValue)
             {
                 query = query.Where(b => b.StartDate >= fromDate.Value);
@@ -56,15 +85,20 @@ namespace EventEaseApp.Controllers
 
             if (toDate.HasValue)
             {
-                query = query.Where(b => b.EndDate <= toDate.Value);
+                var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(b => b.EndDate <= endOfDay);
             }
 
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentStatus"] = status ?? "All";
             ViewData["CurrentVenueId"] = venueId ?? "All";
+            ViewData["CurrentEventTypeId"] = eventTypeId ?? "All";
+            ViewData["CurrentVenueAvailability"] = venueAvailability ?? "All";
             ViewData["CurrentFromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["CurrentToDate"] = toDate?.ToString("yyyy-MM-dd");
+
             ViewData["VenuesList"] = new SelectList(await _context.Venues.OrderBy(v => v.Name).ToListAsync(), "Id", "Name", venueId);
+            ViewData["EventTypesList"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name", eventTypeId);
 
             var bookings = await query.OrderByDescending(b => b.StartDate).ToListAsync();
             return View(bookings);
@@ -73,19 +107,28 @@ namespace EventEaseApp.Controllers
         // GET: Bookings/Create
         public async Task<IActionResult> Create()
         {
-            // Fetch events that haven't been booked yet
+            // Fetch events that haven't been booked yet, including event type
             var unbookedEvents = await _context.Events
+                .Include(e => e.EventType)
                 .Where(e => !_context.Bookings.Any(b => b.EventId == e.Id))
+                .OrderBy(e => e.Title)
                 .ToListAsync();
 
-            var venues = await _context.Venues.Where(v => v.Status == "Active").ToListAsync();
+            var venues = await _context.Venues.Where(v => v.Status == "Active").OrderBy(v => v.Name).ToListAsync();
             if (!venues.Any())
             {
-                venues = await _context.Venues.ToListAsync();
+                venues = await _context.Venues.OrderBy(v => v.Name).ToListAsync();
             }
 
-            ViewData["EventId"] = new SelectList(unbookedEvents, "Id", "Title");
-            ViewData["VenueId"] = new SelectList(venues, "Id", "Name");
+            ViewData["EventId"] = new SelectList(unbookedEvents.Select(e => new {
+                e.Id,
+                DisplayName = e.EventType != null ? $"{e.Title} ({e.EventType.Name})" : e.Title
+            }), "Id", "DisplayName");
+
+            ViewData["VenueId"] = new SelectList(venues.Select(v => new {
+                v.Id,
+                DisplayName = v.IsAvailable ? $"{v.Name} - Available (Cap: {v.Capacity})" : $"{v.Name} - [Unavailable] (Cap: {v.Capacity})"
+            }), "Id", "DisplayName");
 
             return View();
         }
@@ -154,9 +197,23 @@ namespace EventEaseApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var unbookedEvents = await _context.Events.Where(e => !_context.Bookings.Any(b => b.EventId == e.Id)).ToListAsync();
-            ViewData["EventId"] = new SelectList(unbookedEvents, "Id", "Title", booking.EventId);
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", booking.VenueId);
+            var unbookedEvents = await _context.Events
+                .Include(e => e.EventType)
+                .Where(e => !_context.Bookings.Any(b => b.EventId == e.Id))
+                .OrderBy(e => e.Title)
+                .ToListAsync();
+
+            var allVenues = await _context.Venues.OrderBy(v => v.Name).ToListAsync();
+
+            ViewData["EventId"] = new SelectList(unbookedEvents.Select(e => new {
+                e.Id,
+                DisplayName = e.EventType != null ? $"{e.Title} ({e.EventType.Name})" : e.Title
+            }), "Id", "DisplayName", booking.EventId);
+
+            ViewData["VenueId"] = new SelectList(allVenues.Select(v => new {
+                v.Id,
+                DisplayName = v.IsAvailable ? $"{v.Name} - Available (Cap: {v.Capacity})" : $"{v.Name} - [Unavailable] (Cap: {v.Capacity})"
+            }), "Id", "DisplayName", booking.VenueId);
             return View(booking);
         }
 
@@ -169,11 +226,22 @@ namespace EventEaseApp.Controllers
             if (booking == null) return NotFound();
 
             var availableEvents = await _context.Events
+                .Include(e => e.EventType)
                 .Where(e => e.Id == booking.EventId || !_context.Bookings.Any(b => b.EventId == e.Id))
+                .OrderBy(e => e.Title)
                 .ToListAsync();
 
-            ViewData["EventId"] = new SelectList(availableEvents, "Id", "Title", booking.EventId);
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", booking.VenueId);
+            var allVenues = await _context.Venues.OrderBy(v => v.Name).ToListAsync();
+
+            ViewData["EventId"] = new SelectList(availableEvents.Select(e => new {
+                e.Id,
+                DisplayName = e.EventType != null ? $"{e.Title} ({e.EventType.Name})" : e.Title
+            }), "Id", "DisplayName", booking.EventId);
+
+            ViewData["VenueId"] = new SelectList(allVenues.Select(v => new {
+                v.Id,
+                DisplayName = v.IsAvailable ? $"{v.Name} - Available (Cap: {v.Capacity})" : $"{v.Name} - [Unavailable] (Cap: {v.Capacity})"
+            }), "Id", "DisplayName", booking.VenueId);
             return View(booking);
         }
 
@@ -272,10 +340,22 @@ namespace EventEaseApp.Controllers
             }
 
             var availableEvents = await _context.Events
+                .Include(e => e.EventType)
                 .Where(e => e.Id == booking.EventId || !_context.Bookings.Any(b => b.EventId == e.Id))
+                .OrderBy(e => e.Title)
                 .ToListAsync();
-            ViewData["EventId"] = new SelectList(availableEvents, "Id", "Title", booking.EventId);
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", booking.VenueId);
+
+            var allVenues = await _context.Venues.OrderBy(v => v.Name).ToListAsync();
+
+            ViewData["EventId"] = new SelectList(availableEvents.Select(e => new {
+                e.Id,
+                DisplayName = e.EventType != null ? $"{e.Title} ({e.EventType.Name})" : e.Title
+            }), "Id", "DisplayName", booking.EventId);
+
+            ViewData["VenueId"] = new SelectList(allVenues.Select(v => new {
+                v.Id,
+                DisplayName = v.IsAvailable ? $"{v.Name} - Available (Cap: {v.Capacity})" : $"{v.Name} - [Unavailable] (Cap: {v.Capacity})"
+            }), "Id", "DisplayName", booking.VenueId);
             return View(booking);
         }
 

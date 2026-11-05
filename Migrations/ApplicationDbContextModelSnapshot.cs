@@ -29,8 +29,7 @@ namespace EventEaseApp.Migrations
 
                     b.Property<string>("BookingCode")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -87,8 +86,14 @@ namespace EventEaseApp.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EventTypeId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("ExpectedAttendance")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -108,9 +113,34 @@ namespace EventEaseApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventTypeId");
+
                     b.HasIndex("VenueId");
 
                     b.ToTable("dbo_Events");
+                });
+
+            modelBuilder.Entity("EventEaseApp.Models.EventType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("dbo_EventTypes");
                 });
 
             modelBuilder.Entity("EventEaseApp.Models.Venue", b =>
@@ -132,6 +162,11 @@ namespace EventEaseApp.Migrations
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -174,10 +209,17 @@ namespace EventEaseApp.Migrations
 
             modelBuilder.Entity("EventEaseApp.Models.Event", b =>
                 {
+                    b.HasOne("EventEaseApp.Models.EventType", "EventType")
+                        .WithMany("Events")
+                        .HasForeignKey("EventTypeId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("EventEaseApp.Models.Venue", "Venue")
                         .WithMany("Events")
                         .HasForeignKey("VenueId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EventType");
 
                     b.Navigation("Venue");
                 });
@@ -185,6 +227,11 @@ namespace EventEaseApp.Migrations
             modelBuilder.Entity("EventEaseApp.Models.Event", b =>
                 {
                     b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("EventEaseApp.Models.EventType", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("EventEaseApp.Models.Venue", b =>

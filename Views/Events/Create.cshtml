@@ -27,6 +27,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label asp-for="EventTypeId" class="form-label">Event Category / Type</label>
+                            <select asp-for="EventTypeId" class="form-select" asp-items="ViewBag.EventTypeId">
+                                <option value="">-- Select Event Category --</option>
+                            </select>
+                            <span asp-validation-for="EventTypeId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
                             <label asp-for="VenueId" class="form-label">Preferred Venue (Optional)</label>
                             <select asp-for="VenueId" class="form-select" asp-items="ViewBag.VenueId">
                                 <option value="">-- No Preferred Venue / Unassigned --</option>

@@ -11,10 +11,18 @@ namespace EventEaseApp.Data
         public DbSet<Venue> Venues { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<EventType> EventTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Configure EventType to Events relationship (Lookup category)
+            modelBuilder.Entity<Event>()
+                .HasOne(e => e.EventType)
+                .WithMany(et => et.Events)
+                .HasForeignKey(e => e.EventTypeId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Configure Venue to Events relationship
             modelBuilder.Entity<Event>()
@@ -40,6 +48,11 @@ namespace EventEaseApp.Data
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => b.EventId)
                 .IsUnique();
+
+            // Configure Venue availability default
+            modelBuilder.Entity<Venue>()
+                .Property(v => v.IsAvailable)
+                .HasDefaultValue(true);
         }
     }
 }

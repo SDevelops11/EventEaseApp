@@ -18,7 +18,7 @@ namespace EventEaseApp.Controllers
         }
 
         // GET: Venues with Multi-Criteria Search
-        public async Task<IActionResult> Index(string? searchTerm, string? status, int? minCapacity, decimal? maxRate)
+        public async Task<IActionResult> Index(string? searchTerm, string? status, string? venueAvailability, int? minCapacity, decimal? maxRate)
         {
             var query = _context.Venues.AsQueryable();
 
@@ -35,6 +35,19 @@ namespace EventEaseApp.Controllers
                 query = query.Where(v => v.Status == status);
             }
 
+            // Part 3 Filter: Venue Availability
+            if (!string.IsNullOrWhiteSpace(venueAvailability) && venueAvailability != "All")
+            {
+                if (venueAvailability == "Available")
+                {
+                    query = query.Where(v => v.IsAvailable);
+                }
+                else if (venueAvailability == "Unavailable")
+                {
+                    query = query.Where(v => !v.IsAvailable);
+                }
+            }
+
             if (minCapacity.HasValue && minCapacity.Value > 0)
             {
                 query = query.Where(v => v.Capacity >= minCapacity.Value);
@@ -47,6 +60,7 @@ namespace EventEaseApp.Controllers
 
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentStatus"] = status ?? "All";
+            ViewData["CurrentVenueAvailability"] = venueAvailability ?? "All";
             ViewData["CurrentMinCapacity"] = minCapacity;
             ViewData["CurrentMaxRate"] = maxRate;
 

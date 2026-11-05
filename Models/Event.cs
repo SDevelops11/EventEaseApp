@@ -40,6 +40,13 @@ namespace EventEaseApp.Models
 
         public string? ImageUrl { get; set; }
 
+        // Foreign Key to EventType (Lookup category)
+        [Display(Name = "Event Type")]
+        public string? EventTypeId { get; set; }
+
+        [ForeignKey("EventTypeId")]
+        public EventType? EventType { get; set; }
+
         // Navigation Property (1:1 Relationship with Booking)
         public Booking? Booking { get; set; }
     }

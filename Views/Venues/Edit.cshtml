@@ -59,6 +59,18 @@
                             <span asp-validation-for="Status" class="text-danger small"></span>
                         </div>
 
+                        <div class="mb-3 p-3 rounded-3 border bg-light bg-opacity-50">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" asp-for="IsAvailable" id="isAvailableSwitch" />
+                                <label class="form-check-label fw-semibold" for="isAvailableSwitch">
+                                    <i class="bi bi-calendar-check me-1 text-success"></i>Available for Booking Assignments
+                                </label>
+                                <div class="form-text extra-small text-muted mt-1">
+                                    Toggle whether this space is open for booking scheduling.
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label asp-for="AmenitiesJson" class="form-label">Amenities (Comma separated list)</label>
                             <input asp-for="AmenitiesJson" class="form-control" placeholder="e.g. Wi-Fi, Projector, Sound System" />

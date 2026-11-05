@@ -32,6 +32,9 @@ namespace EventEaseApp.Models
         [StringLength(50)]
         public string Status { get; set; } = "Active"; // Active | Maintenance | Archived
 
+        [Display(Name = "Availability")]
+        public bool IsAvailable { get; set; } = true;
+
         public string? Description { get; set; }
 
         // Navigation Properties

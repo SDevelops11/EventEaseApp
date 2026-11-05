@@ -19,16 +19,20 @@ namespace EventEaseApp.Controllers
         }
 
         // GET: Events with Multi-Criteria Search
-        public async Task<IActionResult> Index(string? searchTerm, string? status, string? venueId, DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> Index(string? searchTerm, string? status, string? venueId, string? eventTypeId, DateTime? fromDate, DateTime? toDate)
         {
-            var query = _context.Events.Include(e => e.Venue).AsQueryable();
+            var query = _context.Events
+                .Include(e => e.Venue)
+                .Include(e => e.EventType)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 var term = searchTerm.Trim().ToLower();
                 query = query.Where(e => e.Title.ToLower().Contains(term) ||
                                          e.ClientName.ToLower().Contains(term) ||
-                                         e.ClientEmail.ToLower().Contains(term));
+                                         e.ClientEmail.ToLower().Contains(term) ||
+                                         (e.EventType != null && e.EventType.Name.ToLower().Contains(term)));
             }
 
             if (!string.IsNullOrWhiteSpace(status) && status != "All")
@@ -41,6 +45,12 @@ namespace EventEaseApp.Controllers
                 query = query.Where(e => e.VenueId == venueId);
             }
 
+            // Part 3 Filter: EventType classification
+            if (!string.IsNullOrWhiteSpace(eventTypeId) && eventTypeId != "All")
+            {
+                query = query.Where(e => e.EventTypeId == eventTypeId);
+            }
+
             if (fromDate.HasValue)
             {
                 query = query.Where(e => e.StartDate >= fromDate.Value);
@@ -48,15 +58,19 @@ namespace EventEaseApp.Controllers
 
             if (toDate.HasValue)
             {
-                query = query.Where(e => e.EndDate <= toDate.Value);
+                var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(e => e.EndDate <= endOfDay);
             }
 
             ViewData["CurrentSearch"] = searchTerm;
             ViewData["CurrentStatus"] = status ?? "All";
             ViewData["CurrentVenueId"] = venueId ?? "All";
+            ViewData["CurrentEventTypeId"] = eventTypeId ?? "All";
             ViewData["CurrentFromDate"] = fromDate?.ToString("yyyy-MM-dd");
             ViewData["CurrentToDate"] = toDate?.ToString("yyyy-MM-dd");
+
             ViewData["VenuesList"] = new SelectList(await _context.Venues.OrderBy(v => v.Name).ToListAsync(), "Id", "Name", venueId);
+            ViewData["EventTypesList"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name", eventTypeId);
 
             var events = await query.OrderByDescending(e => e.StartDate).ToListAsync();
             return View(events);
@@ -65,7 +79,8 @@ namespace EventEaseApp.Controllers
         // GET: Events/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["VenueId"] = new SelectList(await _context.Venues.Where(v => v.Status == "Active").ToListAsync(), "Id", "Name");
+            ViewData["VenueId"] = new SelectList(await _context.Venues.Where(v => v.Status == "Active").OrderBy(v => v.Name).ToListAsync(), "Id", "Name");
+            ViewData["EventTypeId"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name");
             return View();
         }
 
@@ -93,7 +108,8 @@ namespace EventEaseApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(await _context.Venues.OrderBy(v => v.Name).ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["EventTypeId"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name", @event.EventTypeId);
             return View(@event);
         }
 
@@ -105,7 +121,8 @@ namespace EventEaseApp.Controllers
             var @event = await _context.Events.FindAsync(id);
             if (@event == null) return NotFound();
 
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(await _context.Venues.OrderBy(v => v.Name).ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["EventTypeId"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name", @event.EventTypeId);
             return View(@event);
         }
 
@@ -174,7 +191,8 @@ namespace EventEaseApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["VenueId"] = new SelectList(await _context.Venues.ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["VenueId"] = new SelectList(await _context.Venues.OrderBy(v => v.Name).ToListAsync(), "Id", "Name", @event.VenueId);
+            ViewData["EventTypeId"] = new SelectList(await _context.EventTypes.OrderBy(et => et.Name).ToListAsync(), "Id", "Name", @event.EventTypeId);
             return View(@event);
         }
 

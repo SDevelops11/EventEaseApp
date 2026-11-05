@@ -24,6 +24,8 @@ out/
 *.deploymanifest
 *.publishproj
 publish/
+publish.zip
+*.zip
 wwwroot/uploads/
 
 ## Environment & secrets

@@ -47,9 +47,11 @@ namespace EventEaseApp.Controllers
             {
                 viewModel.Events = await _context.Events
                     .Include(e => e.Venue)
+                    .Include(e => e.EventType)
                     .Where(e => e.Title.ToLower().Contains(q) ||
                                 e.ClientName.ToLower().Contains(q) ||
                                 e.ClientEmail.ToLower().Contains(q) ||
+                                (e.EventType != null && e.EventType.Name.ToLower().Contains(q)) ||
                                 (e.Venue != null && e.Venue.Name.ToLower().Contains(q)) ||
                                 e.Status.ToLower().Contains(q))
                     .OrderByDescending(e => e.StartDate)
@@ -62,11 +64,13 @@ namespace EventEaseApp.Controllers
                 viewModel.Bookings = await _context.Bookings
                     .Include(b => b.Venue)
                     .Include(b => b.Event)
+                        .ThenInclude(e => e!.EventType)
                     .Where(b => b.BookingCode.ToLower().Contains(q) ||
                                 b.SpecialistName.ToLower().Contains(q) ||
                                 b.Status.ToLower().Contains(q) ||
                                 (b.Venue != null && b.Venue.Name.ToLower().Contains(q)) ||
-                                (b.Event != null && b.Event.Title.ToLower().Contains(q)))
+                                (b.Event != null && b.Event.Title.ToLower().Contains(q)) ||
+                                (b.Event != null && b.Event.EventType != null && b.Event.EventType.Name.ToLower().Contains(q)))
                     .OrderByDescending(b => b.StartDate)
                     .ToListAsync();
             }
